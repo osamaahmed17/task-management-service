@@ -3,3 +3,8 @@ document/
 
 #presentation
 presentation/
+
+#environment file
+.env
+/venv
+src/__pycache__
