@@ -6,5 +6,9 @@ presentation/
 
 #environment file
 .env
+.development.env
 /venv
 src/__pycache__
+
+#database file
+test.db

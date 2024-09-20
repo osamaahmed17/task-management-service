@@ -1,14 +1,7 @@
 from fastapi import FastAPI
-from src.config import settings
 
+from src.api.user.router import router as user_router
 
 app = FastAPI()
 
-
-print(settings.ENV)
-print(settings.DATABASE_URL)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app.include_router(user_router, prefix="/users", tags=["users"])
