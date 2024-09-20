@@ -1,16 +1,11 @@
 curl -X 'POST' \
-  'http://localhost:8000/users/' \
+  'http://localhost:8000/tasks/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Osama Ahmed Tahir",
-  "email": "osamaahmed170395@gmail.com",
-  "password": "osamaahmedtahir"
+  "title": "Complete Documentation",
+  "description": "Documentation is due by the professor",
+  "status": "Completed",
+  "due_date": "12/04/23",
+  "created_at":""
 }'
-
-CREATE TABLE user (
-    id INT PRIMARY KEY,  
-    username VARCHAR(255) SERIAL PRIMARY KEY NOT NULL
-    email VARCHAR(255) NOT NULL UNIQUE,  -- Ensures email is unique for each user
-    password VARCHAR(255) NOT NULL  -- Store hashed passwords, hence the length
-    )

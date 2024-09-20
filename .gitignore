@@ -12,3 +12,13 @@ src/__pycache__
 
 #database file
 test.db
+
+#credentials
+credentials.json
+
+#test
+task.txt
+
+#cache
+__pycache__
+.DS_Store
