@@ -16,9 +16,7 @@ test.db
 #credentials
 credentials.json
 
-#test
-task.txt
-
 #cache
 __pycache__
 .DS_Store
+dump.rdb

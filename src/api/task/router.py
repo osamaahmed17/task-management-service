@@ -24,10 +24,10 @@ async def read_task(task_id: int,task_service: TaskService = Depends()):
     
 @router.put("/{task_id}")
 async def update_task(task_id: int, task_update_input: TaskUpdateInput, task_service: TaskService = Depends()):
-    task = task_service.update(task_id, task_update_input)
+    task = task_service.update_task(task_id, task_update_input)
     return task
     
 @router.delete("/{task_id}")
 async def delete_task(task_id: int, task_service : TaskService = Depends()):
-    task = task_service.delete(task_id)
+    task = task_service.delete_task(task_id)
     return task

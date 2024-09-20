@@ -7,7 +7,7 @@ from fastapi import Depends
 from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
-from src.database import get_session
+from src.db.database import get_session
 from src.api.task.models import Task
 from sqlmodel import  select, Session
 from email.mime.multipart import MIMEMultipart
@@ -101,7 +101,7 @@ class TaskService:
 
     def delete_task(self, task_id):
         statement = select(Task).where(Task.id == task_id)
-        user = self.session.exec(statement).one()
-        self.session.delete(user)
+        task = self.session.exec(statement).one()
+        self.session.delete(task)
         self.session.commit()
         return task
