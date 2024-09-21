@@ -5,34 +5,47 @@ import smtplib
 from enum import Enum
 from email import encoders
 from fastapi import Depends
+from datetime import datetime
 from dotenv import load_dotenv
 from fastapi import HTTPException
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from src.db.database import get_session
 from src.api.task.models import Task
-from sqlmodel import  select, Session
+from sqlmodel import select, Session
 from email.mime.multipart import MIMEMultipart
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+redis_client = redis.Redis(host="localhost", port=6379, db=0)
 load_dotenv()
+
 
 class TaskStatus(str, Enum):
     pending = "pending"
     in_progress = "in_progress"
     completed = "completed"
 
+
 class TaskService:
     def __init__(self, session: Session = Depends(get_session)) -> None:
         self.session = session
 
-    def sendEmail(self, smtp_host, smtp_port, mail_username, mail_password, from_email, mail_subject, to_email, mail_content_html):
+    def sendEmail(
+        self,
+        smtp_host,
+        smtp_port,
+        mail_username,
+        mail_password,
+        from_email,
+        mail_subject,
+        to_email,
+        mail_content_html,
+    ):
         # create message object
         message = MIMEMultipart()
-        message['From'] = from_email
-        message['To'] = from_email
-        message['Subject'] = mail_subject
-        message.attach(MIMEText(mail_content_html, 'html'))
+        message["From"] = from_email
+        message["To"] = from_email
+        message["Subject"] = mail_subject
+        message.attach(MIMEText(mail_content_html, "html"))
         s = smtplib.SMTP(smtp_host, smtp_port)
         s.starttls()
         s.login(mail_username, mail_password)
@@ -40,48 +53,55 @@ class TaskService:
         send_errors = s.sendmail(from_email, to_email, message_text)
         s.quit()
         if not len(send_errors.keys()) == 0:
-            raise HTTPException(status_code=400, detail=f"Errors occurred while sending email")
+            raise HTTPException(
+                status_code=400, detail=f"Errors occurred while sending email"
+            )
 
     def get_tasks(self):
         cached_tasks = redis_client.get("task")
         if cached_tasks:
             print("Fetching task from the cache")
-            task = json.loads(cached_tasks) 
+            task = json.loads(cached_tasks)
             task = [Task(**task) for task in task]
         else:
             print("Fetching task from the database")
             statement = select(Task)
             task = self.session.exec(statement).all()
-            task = [task.dict() for task in task]  
-            redis_client.set("task", json.dumps(task), ex=60 * 5)  # Cache for 60 seconds
+            task = [task.dict() for task in task]
+            redis_client.set(
+                "task", json.dumps(task), ex=60 * 5
+            )  # Cache for 60 seconds
         if not task:
-            raise HTTPException(status_code=404, detail=f"Task with ID {task_id} not found")
+            raise HTTPException(
+                status_code=404, detail=f"Task with ID {task_id} not found"
+            )
         return task
-    
+
     def create_task(self, task_create_input):
         try:
-            # Validate title
             if not task_create_input.title.strip():
                 raise HTTPException(status_code=400, detail="Title cannot be empty.")
 
-            # Validate description
             if not task_create_input.description.strip():
-                raise HTTPException(status_code=400, detail="Description cannot be empty.")
+                raise HTTPException(
+                    status_code=400, detail="Description cannot be empty."
+                )
 
-            # Validate due_date format
             try:
-                datetime.strptime(task_create_input.due_date, '%d/%m/%y')
+                datetime.strptime(task_create_input.due_date, "%d/%m/%y")
             except ValueError:
-                raise HTTPException(status_code=400, detail="Due date must be in the format DD/MM/YY.")
+                raise HTTPException(
+                    status_code=400, detail="Due date must be in the format DD/MM/YY."
+                )
 
-            # Validate status field
             if task_create_input.status not in TaskStatus.__members__.values():
-                raise HTTPException(status_code=400, detail="Status must be 'pending', 'in_progress', or 'completed'.")
+                raise HTTPException(
+                    status_code=400,
+                    detail="Status must be 'pending', 'in_progress', or 'completed'.",
+                )
 
-            # Create the task object
             task = Task(**task_create_input.model_dump())
 
-            # Add the task to session and commit to the database
             self.session.add(task)
             self.session.commit()
             self.session.refresh(task)
@@ -90,7 +110,7 @@ class TaskService:
             smtp_port = os.getenv("SMTP_PORT")
             mail_username = os.getenv("MAIL_USERNAME")
             mail_password = os.getenv("MAIL_PASSWORD")
-            from_email = 'osamaahmed170395@gmail.com'
+            from_email = "osamaahmed170395@gmail.com"
             mail_subject = "Task Created"
             mail_content_html = (
                 f"Hello User <br/> A task has been created with the following information:<br/>"
@@ -99,18 +119,30 @@ class TaskService:
                 "Feel free to contact support, if there are any questions!"
             )
             to_email = "osamaahmed170395@gmail.com"
-            self.sendEmail(smtp_host, smtp_port, mail_username, mail_password, from_email,
-                        mail_subject, to_email, mail_content_html)
+            self.sendEmail(
+                smtp_host,
+                smtp_port,
+                mail_username,
+                mail_password,
+                from_email,
+                mail_subject,
+                to_email,
+                mail_content_html,
+            )
 
             print("Email has been sent successfully to the receiver's address.")
 
             redis_client.delete("task")
-            redis_client.setex(f"task:{task.id}", 60 * 5, json.dumps(task.dict()))  # Cache for 5 minutes
+            redis_client.setex(
+                f"task:{task.id}", 60 * 5, json.dumps(task.dict())
+            )  # Cache for 5 minutes
 
         except HTTPException as http_error:
             raise http_error
         except Exception as error:
-            raise HTTPException(status_code=400, detail=f"An error occurred: {str(error)}")
+            raise HTTPException(
+                status_code=400, detail=f"An error occurred: {str(error)}"
+            )
         return task
 
     def get_by_id(self, task_id: int):
@@ -123,8 +155,12 @@ class TaskService:
         statement = select(Task).where(Task.id == task_id)
         task = self.session.exec(statement).one_or_none()
         if not task:
-            raise HTTPException(status_code=404, detail=f"Task with ID {task_id} not found")
-        redis_client.setex(f"task:{task_id}", 60 * 5, json.dumps(task.dict()))  # Cache for 5 minutes
+            raise HTTPException(
+                status_code=404, detail=f"Task with ID {task_id} not found"
+            )
+        redis_client.setex(
+            f"task:{task_id}", 60 * 5, json.dumps(task.dict())
+        )  # Cache for 5 minutes
         return task
 
     def update_task(self, task_id, task_update_input):
@@ -132,13 +168,15 @@ class TaskService:
             statement = select(Task).where(Task.id == task_id)
             task = self.session.exec(statement).one()
             task_data = task_update_input.dict()
-            if not task_data.get('title').strip():
+            if not task_data.get("title").strip():
                 raise HTTPException(status_code=400, detail="Title cannot be empty.")
-            if not task_data.get('description').strip():
-                raise HTTPException(status_code=400, detail="Description cannot be empty.")
-            if not task_data.get('due_date').strip():
+            if not task_data.get("description").strip():
+                raise HTTPException(
+                    status_code=400, detail="Description cannot be empty."
+                )
+            if not task_data.get("due_date").strip():
                 raise HTTPException(status_code=400, detail="Due date cannot be empty.")
-            if not task_data.get('status').strip():
+            if not task_data.get("status").strip():
                 raise HTTPException(status_code=400, detail="Status cannot be empty.")
             for key, value in task_update_input.dict().items():
                 setattr(task, key, value)
@@ -147,9 +185,14 @@ class TaskService:
             self.session.refresh(task)
             redis_client.delete(f"task:{task_id}")
             redis_client.delete("task")
-            redis_client.setex(f"task:{task.id}", 60 * 5, json.dumps(task.dict()))  # Cache for 5 minutes
+            redis_client.setex(
+                f"task:{task.id}", 60 * 5, json.dumps(task.dict())
+            )  # Cache for 5 minutes
         except Exception as error:
-            raise HTTPException(status_code=400, detail=f"There was an error while updating the task: {str(error)}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"There was an error while updating the task: {str(error)}",
+            )
         return task
 
     def delete_task(self, task_id: int):
@@ -159,21 +202,22 @@ class TaskService:
         self.session.commit()
         return task
 
-
     def get_by_status(self, status: str):
         cached_tasks = redis_client.get("task")
         if cached_tasks:
             print("Fetching task from the cache")
             task = json.loads(cached_tasks)
-            task = [task for task in task if task['status'] == status]
-        else:  
+            task = [task for task in task if task["status"] == status]
+        else:
             print("Fetching task from the database")
             statement = select(Task)
             task = self.session.exec(statement).all()
-            task = [task.dict() for task in task]  
+            task = [task.dict() for task in task]
             print(task)
-            task = [task for task in task if task['status'] == status]
-            redis_client.set("task", json.dumps(task), ex=60 * 5)  # Cache for 60 seconds
+            task = [task for task in task if task["status"] == status]
+            redis_client.set(
+                "task", json.dumps(task), ex=60 * 5
+            )  # Cache for 60 seconds
         if not task:
             raise HTTPException(status_code=404, detail=f"Task not found")
         return task

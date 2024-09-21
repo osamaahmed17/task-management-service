@@ -6,10 +6,12 @@ from src.api.task.schemas import TaskCreateInput, TaskUpdateInput
 
 router = APIRouter()
 
+
 @router.get("/")
-async def read_tasks(task_service : TaskService = Depends()):
+async def read_tasks(task_service: TaskService = Depends()):
     tasks = task_service.get_tasks()
     return tasks
+
 
 @router.get("/{identifier}")
 async def read_task_or_status(identifier: str, task_service: TaskService = Depends()):
@@ -29,16 +31,24 @@ async def read_task_or_status(identifier: str, task_service: TaskService = Depen
 
 
 @router.post("/")
-async def create_task(task_create_input: TaskCreateInput, task_service : TaskService = Depends()):
+async def create_task(
+    task_create_input: TaskCreateInput, task_service: TaskService = Depends()
+):
     task = task_service.create_task(task_create_input)
-    return task    
-    
+    return task
+
+
 @router.put("/{task_id}")
-async def update_task(task_id: int, task_update_input: TaskUpdateInput, task_service: TaskService = Depends()):
+async def update_task(
+    task_id: int,
+    task_update_input: TaskUpdateInput,
+    task_service: TaskService = Depends(),
+):
     task = task_service.update_task(task_id, task_update_input)
     return task
-    
+
+
 @router.delete("/{task_id}")
-async def delete_task(task_id: int, task_service : TaskService = Depends()):
+async def delete_task(task_id: int, task_service: TaskService = Depends()):
     task = task_service.delete_task(task_id)
     return task
