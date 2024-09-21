@@ -76,7 +76,7 @@ EMAIL_PASSWORD=your-email-password
     </code></pre>
     <h3>5. Run the Application Locally</h3>
     <p>Run the FastAPI application locally using Uvicorn:</p>
-    <pre><code>uvicorn main:app --reload
+    <pre><code>uvicorn src.main:app --reload --env-file .env --host 0.0.0.0 --port 8000
     </code></pre>
     <p>The API should now be running at <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>.</p>
     <p>Access the API documentation at:</p>
