@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: task-management-application
+    container_name: task-management-services
     ports:
       - "8000:8000"  
     depends_on:
