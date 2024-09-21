@@ -45,7 +45,7 @@
     <ul>
         <li>Python</li>
         <li>FastAPI</li>
-        <li>SQLite3</li>
+        <li>SQLite</li>
         <li>Redis</li>
     </ul>
     <h2>Installation and Configuration Guide</h2>
