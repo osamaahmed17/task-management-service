@@ -99,11 +99,5 @@ EMAIL_PASSWORD=your-email-password
     <p>To stop the Docker containers, run:</p>
     <pre><code>docker-compose down
     </code></pre>
-    <h3>Troubleshooting</h3>
-    <ul>
-        <li><strong>Port Issues:</strong> If you encounter port binding issues (e.g., <code>port already in use</code>), ensure no other services are running on port 8000 (for FastAPI) or 6379 (for Redis).</li>
-        <li><strong>Redis Connection Error:</strong> Ensure Redis is running and <code>REDIS_HOST</code> is correctly set.</li>
-        <li><strong>Email Notifications:</strong> Ensure your SMTP email service is correctly configured with valid credentials.</li>
-    </ul>
 </body>
 </html>
