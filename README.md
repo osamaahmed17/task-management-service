@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    ![alt text](task-management-service.png)
     <h1>Task Management API with Email Notifications</h1>
     <p>This repository contains a simple Task Management API built with <strong>FastAPI</strong> and <strong>SQLite</strong>. The service allows users to perform CRUD operations (Create, Read, Update, Delete) on tasks, with email notifications upon task creation.</p>
     <h2>Features</h2>
