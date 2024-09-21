@@ -15,7 +15,7 @@ from src.api.task.models import Task
 from sqlmodel import select, Session
 from email.mime.multipart import MIMEMultipart
 
-redis_client = redis.Redis(host='redis', port=6379)
+redis_client = redis.Redis(host= os.getenv("REDIS"), port= os.getenv("REDIS_PORT"))
 load_dotenv()
 
 
