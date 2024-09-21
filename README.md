@@ -1,5 +1,5 @@
-<h1>Task Management API with Email Notifications</h1>
-<p>This repository contains a simple Task Management API built with <strong>FastAPI</strong> and <strong>SQLite</strong>. The service allows users to perform &nbsp;CRUD operations (Create, Read, Update, Delete) on tasks, with email notifications upon task creation.</p>
+<h1>Task Management Application with Email Notifications</h1>
+<p>This repository contains Task Management Application built with <strong>FastAPI</strong> and <strong>SQLite</strong>. The service allows users to perform &nbsp;CRUD operations (Create, Read, Update, Delete) on tasks, with email notifications upon task creation.</p>
 <h2>Features</h2>
 <ol>
     <li>
