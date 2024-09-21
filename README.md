@@ -27,7 +27,7 @@
         <li>
             <p><strong>Task Filtering:</strong></p>
             <ul>
-                <li>Filter tasks by their status (e.g., "pending", "completed", "in_progress").</li>
+                <li>Filter tasks by their status ("pending", "completed", "in_progress")</li>
             </ul>
         </li>
     </ol>
@@ -35,7 +35,7 @@
     <ul>
         <li><strong>Backend Framework</strong>: FastAPI (Python)</li>
         <li><strong>Database</strong>: SQLite</li>
-        <li><strong>Email Service</strong>: Integrated with Google OAuth 2.0 and SMTP service for email notifications</li>
+        <li><strong>Email Notification</strong>: Integrated with Google OAuth 2.0 and SMTP service for email notifications</li>
         <li><strong>Docker</strong>: Dockerized application for easy setup and deployment</li>
     </ul>
     <h2>Requirements</h2>
