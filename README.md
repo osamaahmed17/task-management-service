@@ -8,8 +8,8 @@
     <p align="center">
     <img src="logo.png" width="350" alt="accessibility text">
     </p>
-    <h1>Task Management API with Email Notifications</h1>
-    <p>This repository contains a simple Task Management API built with <strong>FastAPI</strong> and <strong>SQLite</strong>. The service allows users to perform CRUD operations (Create, Read, Update, Delete) on tasks, with email notifications upon task creation.</p>
+    <h1>Task Management Service with Email Notifications</h1>
+    <p>This repository contains a simple Task Management Service built with <strong>FastAPI</strong> and <strong>SQLite</strong>. The service allows users to perform CRUD operations (Create, Read, Update, Delete) on tasks, with email notifications upon task creation.</p>
     <h2>Features</h2>
     <ol>
         <li>
@@ -51,7 +51,7 @@
     <h2>Installation and Configuration Guide</h2>
     <h3>1. Clone the Repository</h3>
     <p>Start by cloning the repository to your local machine:</p>
-    <pre><code>git clone https://github.com/your-username/task-manager-api.git
+    <pre><code>git clone https://github.com/your-username/task-management-service.git
 cd task-manager-api
     </code></pre>
     <h3>2. Set Up a Virtual Environment</h3>
@@ -59,10 +59,6 @@ cd task-manager-api
     <p><strong>On macOS/Linux:</strong></p>
     <pre><code>python3 -m venv venv
 source venv/bin/activate
-    </code></pre>
-    <p><strong>On Windows:</strong></p>
-    <pre><code>python -m venv venv
-venv\Scripts\activate
     </code></pre>
     <h3>3. Install Dependencies</h3>
     <p>Install the necessary Python packages listed in the <code>requirements.txt</code> file:</p>
