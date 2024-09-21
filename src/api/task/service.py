@@ -15,7 +15,7 @@ from src.api.task.models import Task
 from sqlmodel import select, Session
 from email.mime.multipart import MIMEMultipart
 
-redis_client = redis.Redis(host="localhost", port=6379, db=0)
+redis_client = redis.Redis(host='redis', port=6379)
 load_dotenv()
 
 
@@ -40,7 +40,6 @@ class TaskService:
         to_email,
         mail_content_html,
     ):
-        # create message object
         message = MIMEMultipart()
         message["From"] = from_email
         message["To"] = from_email
@@ -166,8 +165,10 @@ class TaskService:
     def update_task(self, task_id, task_update_input):
         try:
             statement = select(Task).where(Task.id == task_id)
+            
             task = self.session.exec(statement).one()
             task_data = task_update_input.dict()
+        
             if not task_data.get("title").strip():
                 raise HTTPException(status_code=400, detail="Title cannot be empty.")
             if not task_data.get("description").strip():
@@ -176,8 +177,14 @@ class TaskService:
                 )
             if not task_data.get("due_date").strip():
                 raise HTTPException(status_code=400, detail="Due date cannot be empty.")
-            if not task_data.get("status").strip():
+            # Validate status
+            status = task_data.get("status").strip()
+            if not status:
                 raise HTTPException(status_code=400, detail="Status cannot be empty.")
+            if status not in TaskStatus.__members__.values():
+                raise HTTPException(
+                    status_code=400, detail="Status must be 'pending', 'in_progress', or 'completed'."
+                )
             for key, value in task_update_input.dict().items():
                 setattr(task, key, value)
             self.session.add(task)

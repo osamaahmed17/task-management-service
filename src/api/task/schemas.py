@@ -47,7 +47,3 @@ class TaskUpdateInput(BaseModel):
             raise ValueError("Due date must be in the format DD/MM/YY")
         return v
 
-    @validator("status")
-    def check_status(cls, v):
-        if v not in ["pending", "in_progress", "completed"]:
-            raise ValueError("Status must be 'pending', 'in_progress', or 'completed'")
