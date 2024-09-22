@@ -52,7 +52,7 @@
     <h3>1. Clone the Repository</h3>
     <p>Start by cloning the repository to your local machine:</p>
     <pre><code>git clone https://github.com/your-username/task-management-service.git
-cd task-manager-api
+cd task-management-service
     </code></pre>
     <h3>2. Set Up a Virtual Environment</h3>
     <p>It's a good practice to create a virtual environment to manage dependencies.</p>
