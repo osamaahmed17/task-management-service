@@ -10,9 +10,9 @@ from dotenv import load_dotenv
 from fastapi import HTTPException
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
-from src.db.database import get_session
-from src.api.task.models import Task
 from sqlmodel import select, Session
+from src.api.task.models import Task
+from src.db.database import get_session
 from email.mime.multipart import MIMEMultipart
 
 redis_client = redis.Redis(host= os.getenv("REDIS"), port= os.getenv("REDIS_PORT"))

@@ -1,9 +1,10 @@
 from typing import Mapping
 from src.api.task.models import Task
 from fastapi import APIRouter, Depends
+from src.api.task.schemas import TaskSchema
 from src.api.task.service import TaskService
 from src.api.task.dependencies import get_task
-from src.api.task.schemas import TaskSchema
+
 
 router = APIRouter()
 
@@ -36,7 +37,6 @@ async def read_task_or_status(identifier: str, task_service: TaskService = Depen
             return tasks
         return {"error": f"No tasks found with status '{identifier}'"}
 
-
 @router.post(
     "/",
     summary="Creates a task",
@@ -47,7 +47,6 @@ async def create_task(
 ):
     task = task_service.create_task(task_create_input)
     return task
-
 
 @router.put(
     "/{task_id}",
