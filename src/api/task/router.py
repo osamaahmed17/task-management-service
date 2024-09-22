@@ -3,7 +3,6 @@ from src.api.task.models import Task
 from fastapi import APIRouter, Depends
 from src.api.task.schemas import TaskSchema
 from src.api.task.service import TaskService
-from src.api.task.dependencies import get_task
 
 
 router = APIRouter()
