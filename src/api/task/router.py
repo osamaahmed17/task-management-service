@@ -3,7 +3,7 @@ from src.api.task.models import Task
 from fastapi import APIRouter, Depends
 from src.api.task.service import TaskService
 from src.api.task.dependencies import get_task
-from src.api.task.schemas import TaskCreateInput, TaskUpdateInput
+from src.api.task.schemas import TaskSchema
 
 router = APIRouter()
 
@@ -43,7 +43,7 @@ async def read_task_or_status(identifier: str, task_service: TaskService = Depen
     description="This route creates a task but requires a body as JSON"
 )
 async def create_task(
-    task_create_input: TaskCreateInput, task_service: TaskService = Depends()
+    task_create_input: TaskSchema, task_service: TaskService = Depends()
 ):
     task = task_service.create_task(task_create_input)
     return task
@@ -56,7 +56,7 @@ async def create_task(
 )
 async def update_task(
     task_id: int,
-    task_update_input: TaskUpdateInput,
+    task_update_input: TaskSchema,
     task_service: TaskService = Depends(),
 ):
     task = task_service.update_task(task_id, task_update_input)

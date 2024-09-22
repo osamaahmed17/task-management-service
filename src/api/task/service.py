@@ -71,15 +71,14 @@ class TaskService:
                 "task", json.dumps(task), ex=60 * 5
             )  # Cache for 60 seconds
         if not task:
-            raise HTTPException(
-                status_code=404, detail=f"Task with ID {task_id} not found"
-            )
+            raise HTTPException(status_code=404, detail="Task not found")
+            
         return task
 
     def create_task(self, task_create_input):
         try:
             if not task_create_input.title.strip():
-                raise HTTPException(status_code=400, detail="Title cannot be empty.")
+                raise HTTPException(status_code=400, detail="title cannot be empty.")
 
             if not task_create_input.description.strip():
                 raise HTTPException(

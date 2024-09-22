@@ -9,7 +9,7 @@ class TaskStatus(str, Enum):
     completed = "completed"
 
 
-class TaskCreateInput(BaseModel):
+class TaskSchema(BaseModel):
     title: str
     status: TaskStatus
     description: str
@@ -31,19 +31,4 @@ class TaskCreateInput(BaseModel):
             raise ValueError("Status must be 'pending', 'in_progress', or 'completed'")
         return v
 
-
-class TaskUpdateInput(BaseModel):
-    title: str
-    status: str
-    description: str
-    due_date: str
-
-    # Custom validator for due_date in update as well
-    @validator("due_date")
-    def check_due_date_format(cls, v):
-        try:
-            datetime.strptime(v, "%d/%m/%y")
-        except ValueError:
-            raise ValueError("Due date must be in the format DD/MM/YY")
-        return v
 
