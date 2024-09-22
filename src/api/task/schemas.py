@@ -30,5 +30,3 @@ class TaskSchema(BaseModel):
         if v not in ["pending", "in_progress", "completed"]:
             raise ValueError("Status must be 'pending', 'in_progress', or 'completed'")
         return v
-
-

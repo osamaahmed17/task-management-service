@@ -7,7 +7,8 @@ class TaskStatus(str, Enum):
     pending = "pending"
     in_progress = "in_progress"
     completed = "completed"
-  
+
+
 class Task(SQLModel, table=True):
     id: int = Field(primary_key=True, index=True)
     title: str

@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     ENV: str = "development"
     REDIS: str = "redis"
-    REDIS_PORT: int = 6379    
+    REDIS_PORT: int = 6379
     DATABASE_URL: str = "sqlite:///./test.db"
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587

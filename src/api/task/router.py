@@ -9,9 +9,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
-    summary="Fetch all the Tasks",
-    description="This route fetches all the tasks")
+    "/", summary="Fetch all the Tasks", description="This route fetches all the tasks"
+)
 async def read_tasks(task_service: TaskService = Depends()):
     tasks = task_service.get_tasks()
     return tasks
@@ -20,7 +19,8 @@ async def read_tasks(task_service: TaskService = Depends()):
 @router.get(
     "/{identifier}",
     summary="Fetch a specific task on either id or status",
-    description="This route fetches all the tasks depending on the condition that are status or id")
+    description="This route fetches all the tasks depending on the condition that are status or id",
+)
 async def read_task_or_status(identifier: str, task_service: TaskService = Depends()):
     print(identifier)
     # Check if the identifier is a valid integer (for task_id)
@@ -36,10 +36,11 @@ async def read_task_or_status(identifier: str, task_service: TaskService = Depen
             return tasks
         return {"error": f"No tasks found with status '{identifier}'"}
 
+
 @router.post(
     "/",
     summary="Creates a task",
-    description="This route creates a task but requires a body as JSON"
+    description="This route creates a task but requires a body as JSON",
 )
 async def create_task(
     task_create_input: TaskSchema, task_service: TaskService = Depends()
@@ -47,10 +48,11 @@ async def create_task(
     task = task_service.create_task(task_create_input)
     return task
 
+
 @router.put(
     "/{task_id}",
     summary="Updates a task",
-    description="This route updates a task but requires an ID as param"
+    description="This route updates a task but requires an ID as param",
 )
 async def update_task(
     task_id: int,
@@ -64,7 +66,7 @@ async def update_task(
 @router.delete(
     "/{task_id}",
     summary="Delete a task",
-    description="This route delete a task but requires an ID as param"
+    description="This route delete a task but requires an ID as param",
 )
 async def delete_task(task_id: int, task_service: TaskService = Depends()):
     task = task_service.delete_task(task_id)

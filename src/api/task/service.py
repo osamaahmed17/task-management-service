@@ -15,7 +15,7 @@ from src.api.task.models import Task
 from src.db.database import get_session
 from email.mime.multipart import MIMEMultipart
 
-redis_client = redis.Redis(host= os.getenv("REDIS"), port= os.getenv("REDIS_PORT"))
+redis_client = redis.Redis(host= "localhost", port= 6379)
 load_dotenv()
 
 
@@ -72,7 +72,7 @@ class TaskService:
             )  # Cache for 60 seconds
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
-            
+
         return task
 
     def create_task(self, task_create_input):
@@ -164,10 +164,10 @@ class TaskService:
     def update_task(self, task_id, task_update_input):
         try:
             statement = select(Task).where(Task.id == task_id)
-            
+
             task = self.session.exec(statement).one()
             task_data = task_update_input.dict()
-        
+
             if not task_data.get("title").strip():
                 raise HTTPException(status_code=400, detail="Title cannot be empty.")
             if not task_data.get("description").strip():
@@ -182,7 +182,8 @@ class TaskService:
                 raise HTTPException(status_code=400, detail="Status cannot be empty.")
             if status not in TaskStatus.__members__.values():
                 raise HTTPException(
-                    status_code=400, detail="Status must be 'pending', 'in_progress', or 'completed'."
+                    status_code=400,
+                    detail="Status must be 'pending', 'in_progress', or 'completed'.",
                 )
             for key, value in task_update_input.dict().items():
                 setattr(task, key, value)
