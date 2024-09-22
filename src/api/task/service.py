@@ -144,7 +144,6 @@ class TaskService:
         return task
 
     def get_by_id(self, task_id: int):
-        print("hello there")
         cached_task = redis_client.get(f"task:{task_id}")
         if cached_task:
             print(f"Returning cached task {task_id}.")
@@ -152,13 +151,11 @@ class TaskService:
 
         statement = select(Task).where(Task.id == task_id)
         task = self.session.exec(statement).one_or_none()
+
         if not task:
             raise HTTPException(
                 status_code=404, detail=f"Task with ID {task_id} not found"
             )
-        redis_client.setex(
-            f"task:{task_id}", 60 * 5, json.dumps(task.dict())
-        )  # Cache for 5 minutes
         return task
 
     def update_task(self, task_id, task_update_input):
@@ -190,8 +187,7 @@ class TaskService:
             self.session.add(task)
             self.session.commit()
             self.session.refresh(task)
-            redis_client.delete(f"task:{task_id}")
-            redis_client.delete("task")
+            redis_client.flushdb()
             redis_client.setex(
                 f"task:{task.id}", 60 * 5, json.dumps(task.dict())
             )  # Cache for 5 minutes
@@ -200,13 +196,23 @@ class TaskService:
                 status_code=400,
                 detail=f"There was an error while updating the task: {str(error)}",
             )
+        print(task)
         return task
 
     def delete_task(self, task_id: int):
-        statement = select(Task).where(Task.id == task_id)
-        task = self.session.exec(statement).one()
-        self.session.delete(task)
-        self.session.commit()
+        try:
+            statement = select(Task).where(Task.id == task_id)
+            task = self.session.exec(statement).one()
+            self.session.delete(task)
+            self.session.commit()
+            redis_client.delete(f"task:{task_id}")
+            redis_client.flushdb()
+     
+        except Exception as error:
+            raise HTTPException(
+                status_code=400,
+                detail=f"There was an error while updating the task: {str(error)}",
+            )    
         return task
 
     def get_by_status(self, status: str):
@@ -215,6 +221,7 @@ class TaskService:
             print("Fetching task from the cache")
             task = json.loads(cached_tasks)
             task = [task for task in task if task["status"] == status]
+          # Cache for 60 second
         else:
             print("Fetching task from the database")
             statement = select(Task)
