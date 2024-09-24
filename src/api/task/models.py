@@ -15,4 +15,5 @@ class Task(SQLModel, table=True):
     status: TaskStatus
     description: str
     due_date: str
+    email: str
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())

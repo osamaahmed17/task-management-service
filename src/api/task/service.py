@@ -58,6 +58,9 @@ class TaskService:
 
     def get_tasks(self):
         cached_tasks = redis_client.get("task")
+        total_task = 0
+        if cached_tasks is not None:
+            total_task = len(json.loads(cached_tasks)) 
         if cached_tasks:
             print("Fetching task from the cache")
             task = json.loads(cached_tasks)
@@ -67,13 +70,15 @@ class TaskService:
             statement = select(Task)
             task = self.session.exec(statement).all()
             task = [task.dict() for task in task]
+            if cached_tasks is not None:
+                    total_task = len(json.loads(cached_tasks))
             redis_client.set(
                 "task", json.dumps(task), ex=60 * 5
             )  # Cache for 60 seconds
+        total_task = f"total tasks: {total_task} "
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
-
-        return task
+        return task, total_task
 
     def create_task(self, task_create_input):
         try:
@@ -116,7 +121,7 @@ class TaskService:
                 f"<li>Due Date: {task.due_date}</li></ul>"
                 "Feel free to contact support, if there are any questions!"
             )
-            to_email = "osamaahmed170395@gmail.com"
+            to_email = task.email
             self.sendEmail(
                 smtp_host,
                 smtp_port,

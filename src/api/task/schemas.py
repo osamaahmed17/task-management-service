@@ -14,6 +14,8 @@ class TaskSchema(BaseModel):
     status: TaskStatus
     description: str
     due_date: str
+    email: str
+
 
     # Custom validator for due_date to ensure it follows DD/MM/YY format
     @validator("due_date")
